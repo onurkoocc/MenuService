@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -19,7 +20,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long restaurantId;
+    private UUID restaurantId;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     @JsonManagedReference

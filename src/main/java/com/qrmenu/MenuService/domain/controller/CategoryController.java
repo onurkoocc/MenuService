@@ -1,40 +1,32 @@
 package com.qrmenu.MenuService.domain.controller;
 
-import com.qrmenu.MenuService.domain.model.entity.Category;
+import com.qrmenu.MenuService.domain.model.request.CategoryRequest;
+import com.qrmenu.MenuService.domain.model.response.CategoryResponse;
 import com.qrmenu.MenuService.domain.service.CategoryService;
+import com.qrmenu.MenuService.domain.service.impl.CategoryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api/menus/categories")
+
 public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
 
-    // Create a new category or subcategory
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-        Category createdCategory = categoryService.createCategory(category);
+    @PreAuthorize("hasAnyRole('RESTAURANT_MANAGER')")
+    public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryRequest request) {
+        CategoryResponse createdCategory = categoryService.createCategory(request);
         return ResponseEntity.ok(createdCategory);
     }
 
-    // Get subcategories of a category
-    @GetMapping("/{id}/subcategories")
-    public ResponseEntity<List<Category>> getSubCategories(@PathVariable Long id) {
-        List<Category> subCategories = categoryService.getSubCategories(id);
-        return ResponseEntity.ok(subCategories);
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponse> getCategory(@PathVariable Long id) {
+        CategoryResponse categoryResponse = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(categoryResponse);
     }
-
-    // Get top-level categories of a menu
-    @GetMapping("/menu/{menuId}")
-    public ResponseEntity<List<Category>> getTopLevelCategories(@PathVariable Long menuId) {
-        List<Category> categories = categoryService.getTopLevelCategories(menuId);
-        return ResponseEntity.ok(categories);
-    }
-
-    // Additional endpoints for updating and deleting categories
-    // ...
 }

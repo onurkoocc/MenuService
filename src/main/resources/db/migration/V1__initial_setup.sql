@@ -4,7 +4,7 @@
 -- Create the 'menu' table
     CREATE TABLE menu (
                           id BIGSERIAL PRIMARY KEY,
-                          restaurant_id BIGINT NOT NULL
+                          restaurant_id UUID NOT NULL
     );
 
 -- Create the 'category' table
