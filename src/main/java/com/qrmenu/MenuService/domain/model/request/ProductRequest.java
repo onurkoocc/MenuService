@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class ProductRequest {
+    private Long id;
     @NotBlank(message = "Product name is required")
     private String name;
     private Long categoryId;

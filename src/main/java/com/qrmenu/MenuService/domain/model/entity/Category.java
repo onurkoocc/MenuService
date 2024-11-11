@@ -37,11 +37,11 @@ public class Category {
     @JsonBackReference
     private Category parentCategory;
 
-    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL ,  orphanRemoval = true)
     @JsonManagedReference
     private List<Category> subCategories;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL ,  orphanRemoval = true)
     @JsonManagedReference
     private List<Product> products;
 

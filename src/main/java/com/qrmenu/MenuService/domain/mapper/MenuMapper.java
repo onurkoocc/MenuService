@@ -115,4 +115,19 @@ public class MenuMapper {
         productResponse.setPhotoUrl(product.getPhotoUrl());
         return productResponse;
     }
+
+    // New methods for updating entities
+    public static void updateProductFromRequest(ProductRequest productRequest, Product product) {
+        if (productRequest.getName() != null) product.setName(productRequest.getName());
+        if (productRequest.getTitle() != null) product.setTitle(productRequest.getTitle());
+        if (productRequest.getDescription() != null) product.setDescription(productRequest.getDescription());
+        if (productRequest.getPrice() != 0) product.setPrice(productRequest.getPrice());
+        if (productRequest.getPhotoUrl() != null) product.setPhotoUrl(productRequest.getPhotoUrl());
+    }
+
+    public static void updateCategoryFromRequest(CategoryRequest categoryRequest, Category category) {
+        if (categoryRequest.getName() != null)
+            category.setName(categoryRequest.getName());
+        // Note: Updating subcategories and products can be complex; handle carefully.
+    }
 }

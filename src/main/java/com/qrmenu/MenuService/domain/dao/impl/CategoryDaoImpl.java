@@ -11,6 +11,7 @@ import com.qrmenu.MenuService.domain.repository.CategoryRepository;
 import com.qrmenu.MenuService.domain.repository.MenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,59 @@ public class CategoryDaoImpl implements CategoryDao {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
 
         return MenuMapper.categoryToCategoryResponse(category);
+    }
+
+
+    @Override
+    @Transactional
+    public CategoryResponse updateCategory(CategoryRequest categoryRequest) {
+        if (categoryRequest.getId() == null) {
+            throw new IllegalArgumentException("Category ID is required for update");
+        }
+
+        Category category = categoryRepository.findById(categoryRequest.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryRequest.getId()));
+
+        // Update category fields
+        MenuMapper.updateCategoryFromRequest(categoryRequest, category);
+
+        // Update Parent Category if needed
+        if (categoryRequest.getParentCategoryId() != null && !categoryRequest.getParentCategoryId().equals(
+                category.getParentCategory() != null ? category.getParentCategory().getId() : null)) {
+
+            Category newParentCategory = categoryRepository.findById(categoryRequest.getParentCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent Category not found with id: " + categoryRequest.getParentCategoryId()));
+            category.setParentCategory(newParentCategory);
+            category.setMenu(newParentCategory.getMenu());
+        }
+
+        // Update Menu if needed (for root categories)
+        if (categoryRequest.getMenuId() != null && category.getParentCategory() == null &&
+                !categoryRequest.getMenuId().equals(category.getMenu().getId())) {
+
+            Menu menu = menuRepository.findById(categoryRequest.getMenuId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Menu not found with id: " + categoryRequest.getMenuId()));
+            category.setMenu(menu);
+        }
+
+        // Handle subcategories and products updates as needed (complex and depends on your requirements)
+
+        // Save the updated category
+        Category updatedCategory = categoryRepository.save(category);
+
+        return MenuMapper.categoryToCategoryResponse(updatedCategory);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
+
+        // Deleting a category should also handle subcategories and products if needed
+        // CascadeType.ALL and orphanRemoval = true on associations handle this
+
+        categoryRepository.delete(category);
     }
 
     // Helper method to map subcategories

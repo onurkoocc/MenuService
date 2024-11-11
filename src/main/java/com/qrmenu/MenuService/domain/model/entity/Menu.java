@@ -22,7 +22,7 @@ public class Menu {
 
     private UUID restaurantId;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL,  orphanRemoval = true)
     @JsonManagedReference
     private List<Category> categories;
 

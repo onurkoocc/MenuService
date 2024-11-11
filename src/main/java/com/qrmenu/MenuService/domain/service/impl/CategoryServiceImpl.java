@@ -21,4 +21,14 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryDao.getCategoryById(id);
     }
 
+    @Override
+    public CategoryResponse updateCategory(CategoryRequest categoryRequest) {
+        return categoryDao.updateCategory(categoryRequest);
+    }
+
+    @Override
+    public void deleteCategory(Long categoryId) {
+        categoryDao.deleteCategory(categoryId);
+    }
+
 }

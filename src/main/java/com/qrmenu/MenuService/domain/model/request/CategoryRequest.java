@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class CategoryRequest {
+    private Long id;
     @NotBlank(message = "Category name is required")
     private String name;
     private Long menuId;
